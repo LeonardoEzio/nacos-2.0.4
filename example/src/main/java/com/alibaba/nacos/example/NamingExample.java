@@ -40,10 +40,11 @@ import java.util.concurrent.TimeUnit;
 public class NamingExample {
     
     public static void main(String[] args) throws NacosException, InterruptedException {
-        
+
+        // 设置环境变量 指定nacos服务地址 以及命名空间 (不指定命名空间则注册至public下)
         Properties properties = new Properties();
-        properties.setProperty("serverAddr", System.getProperty("serverAddr"));
-        properties.setProperty("namespace", System.getProperty("namespace"));
+        properties.setProperty("serverAddr", "10.1.55.125:8848");
+//        properties.setProperty("namespace", "namingExample");
         
         NamingService naming = NamingFactory.createNamingService(properties);
         
@@ -76,11 +77,13 @@ public class NamingExample {
                 System.out.println("instances from event: " + ((NamingEvent) event).getInstances());
             }
         });
-    
+
+
+        // 注销实列 若要查看心跳检测等代码实现 最好注释下方三行代码以及将最后的sleep time延长
         naming.deregisterInstance("nacos.test.3", "11.11.11.11", 8888, "TEST1");
-        
+
         Thread.sleep(1000);
-    
+
         System.out.println("instances after deregister: " + naming.getAllInstances("nacos.test.3"));
         
         Thread.sleep(1000);

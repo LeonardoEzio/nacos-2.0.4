@@ -126,6 +126,7 @@ public class NacosNamingService implements NamingService {
     @Override
     public void registerInstance(String serviceName, String groupName, String ip, int port, String clusterName)
             throws NacosException {
+        // 组装注册实列信息
         Instance instance = new Instance();
         instance.setIp(ip);
         instance.setPort(port);

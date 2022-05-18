@@ -286,7 +286,7 @@ public abstract class RpcClient implements Closeable {
             t.setDaemon(true);
             return t;
         });
-        
+
         // connection event consumer.
         clientEventExecutor.submit(() -> {
             while (!clientEventExecutor.isTerminated() && !clientEventExecutor.isShutdown()) {
@@ -303,7 +303,8 @@ public abstract class RpcClient implements Closeable {
                 }
             }
         });
-        
+
+        // heartbeat detection and reconnection
         clientEventExecutor.submit(() -> {
             while (true) {
                 try {
@@ -317,6 +318,7 @@ public abstract class RpcClient implements Closeable {
                         if (System.currentTimeMillis() - lastActiveTimeStamp >= keepAliveTime) {
                             boolean isHealthy = healthCheck();
                             if (!isHealthy) {
+                                // 检测到实列为非健康状态 则更新实列状态
                                 if (currentConnection == null) {
                                     continue;
                                 }
@@ -382,6 +384,8 @@ public abstract class RpcClient implements Closeable {
         while (startUpRetryTimes > 0 && connectToServer == null) {
             try {
                 startUpRetryTimes--;
+
+                // get a server form cluster random
                 ServerInfo serverInfo = nextRpcServer();
                 
                 LoggerUtils.printIfInfoEnabled(LOGGER, "[{}] Try to connect to server on start up, server: {}", name,
@@ -459,7 +463,10 @@ public abstract class RpcClient implements Closeable {
         }
         closeConnection(currentConnection);
     }
-    
+
+    /**
+     * 心跳检测
+     * */
     private boolean healthCheck() {
         HealthCheckRequest healthCheckRequest = new HealthCheckRequest();
         if (this.currentConnection == null) {
