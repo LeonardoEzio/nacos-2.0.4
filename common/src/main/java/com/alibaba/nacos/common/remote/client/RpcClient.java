@@ -318,19 +318,19 @@ public abstract class RpcClient implements Closeable {
                         if (System.currentTimeMillis() - lastActiveTimeStamp >= keepAliveTime) {
                             boolean isHealthy = healthCheck();
                             if (!isHealthy) {
-                                // 检测到实列为非健康状态 则更新实列状态
+                                // 检测到连接状态为非健康状态 更新连接状态
                                 if (currentConnection == null) {
                                     continue;
                                 }
                                 LoggerUtils.printIfInfoEnabled(LOGGER,
                                         "[{}] Server healthy check fail, currentConnection = {}", name,
                                         currentConnection.getConnectionId());
-                                
+
                                 RpcClientStatus rpcClientStatus = RpcClient.this.rpcClientStatus.get();
                                 if (RpcClientStatus.SHUTDOWN.equals(rpcClientStatus)) {
                                     break;
                                 }
-                                
+
                                 boolean statusFLowSuccess = RpcClient.this.rpcClientStatus
                                         .compareAndSet(rpcClientStatus, RpcClientStatus.UNHEALTHY);
                                 if (statusFLowSuccess) {
@@ -338,7 +338,7 @@ public abstract class RpcClient implements Closeable {
                                 } else {
                                     continue;
                                 }
-                                
+
                             } else {
                                 lastActiveTimeStamp = System.currentTimeMillis();
                                 continue;
@@ -346,7 +346,6 @@ public abstract class RpcClient implements Closeable {
                         } else {
                             continue;
                         }
-                        
                     }
                     
                     if (reconnectContext.serverInfo != null) {
@@ -417,7 +416,7 @@ public abstract class RpcClient implements Closeable {
             if (request instanceof ClientDetectionRequest) {
                 return new ClientDetectionResponse();
             }
-            
+
             return null;
         });
         

@@ -173,7 +173,7 @@ public class NamingClientProxyDelegate implements NamingClientProxy {
     }
     
     private NamingClientProxy getExecuteClientProxy(Instance instance) {
-        // 根据实列类型获取具体的客户端代理类 若是临时实列则使用 grpcClientProxy 反之使用 httpClientProxy
+        // get executeClient if instance is ephemeral use grpcClientProxy else use httpClientProxy
         return instance.isEphemeral() ? grpcClientProxy : httpClientProxy;
     }
     
