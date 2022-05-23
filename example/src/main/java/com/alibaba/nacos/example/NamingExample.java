@@ -51,8 +51,8 @@ public class NamingExample {
             });
     
     public static void main(String[] args) throws NacosException, InterruptedException {
-//        registerEphemeral();
-        registerPersistence();
+        registerEphemeral();
+//        registerPersistence();
     }
 
 
@@ -67,7 +67,7 @@ public class NamingExample {
 
         NamingService naming = NamingFactory.createNamingService(properties);
 
-        naming.registerInstance("nacos.test.3", "11.11.11.11", 8888, "TEST1");
+        naming.registerInstance("nacos.test.e1", "11.11.11.11", 8888, "TEST1");
 
         System.out.println("instances after register: " + naming.getAllInstances("nacos.test.3"));
 
@@ -140,12 +140,12 @@ public class NamingExample {
 
 
         // 注销实列 若要查看心跳检测等代码实现 最好注释下方注销实列代码将最后的sleep time延长
-//        naming.deregisterInstance("nacos.test.3", "11.11.11.11", 8888, "TEST1");
+        naming.deregisterInstance("nacos.test.3", "11.11.11.11", 8888, "TEST1");
 
         Thread.sleep(1000);
 
         System.out.println("instances after deregister: " + naming.getAllInstances("nacos.test.3"));
 
-        Thread.sleep(10000000L);
+        Thread.sleep(1000);
     }
 }
